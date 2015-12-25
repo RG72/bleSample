@@ -22,7 +22,7 @@ var calcDistance=function (j) {
     var ratio_linear = Math.pow(10, ratio_db / 10);
 
     var r = Math.sqrt(ratio_linear);
-    j.distance=r;
+    j.distance=r.toFixed(2);
     return r;
 };//calcDistance
 
@@ -38,9 +38,9 @@ io.on('connection', function (socket) {
     }
     if (j){
       j.uuid="";
-      console.log('uuid array',j.scanRecord.slice(9,25));
       j.scanRecord.slice(9,25).forEach(function(b){
-        j.uuid+=Number(b).toString(16);
+        //TODO Fix in android app scanRecord array
+        j.uuid+=Number(b<0?256+b:b).toString(16);
       });
       j.txCalibratedPower=j.scanRecord[29];
 
@@ -48,7 +48,7 @@ io.on('connection', function (socket) {
       socket.broadcast.emit('info',j);
     }
 
-    console.log('bleData',j.uuid,j.distance);
+    console.log('bleData mac:%s uuid:%s distance:%s',j.mac,j.uuid,j.distance);
   });
 
   socket.on('disconnect', function () {
