@@ -28,11 +28,6 @@ var calcDistance=function (j) {
 
 io.on('connection', function (socket) {
   console.log('Connected');
-  socket.emit('info',{
-    mac:'test',
-    uuid:'testUUID',
-    rssi:-61
-  });
 
   socket.on('bleData', function (json) {
     var j=null;
@@ -43,6 +38,7 @@ io.on('connection', function (socket) {
     }
     if (j){
       j.uuid="";
+      console.log('uuid array',j.scanRecord.slice(9,25));
       j.scanRecord.slice(9,25).forEach(function(b){
         j.uuid+=Number(b).toString(16);
       });
@@ -52,7 +48,7 @@ io.on('connection', function (socket) {
       socket.broadcast.emit('info',j);
     }
 
-    console.log('bleData',j);
+    console.log('bleData',j.uuid,j.distance);
   });
 
   socket.on('disconnect', function () {
